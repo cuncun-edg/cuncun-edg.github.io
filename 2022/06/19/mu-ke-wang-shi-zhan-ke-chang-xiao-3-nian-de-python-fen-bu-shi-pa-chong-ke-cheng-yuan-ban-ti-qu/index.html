@@ -5,13 +5,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="慕课网实战课-畅销3年的Python分布式爬虫课程-原版提取, 初见">
-    <meta name="description" content="正则表达示
-贪婪匹配≈反向匹配？？？？ 匹配line字段时从后往前匹配
+    <meta name="description" content="正则表达示贪婪匹配与非贪婪匹配个人理解：
+贪婪匹配从左到右匹配，从最后一个满足条件的字符开始匹配
+非贪婪匹配从左到右匹配，从第一个满足条件的字符开始匹配
+
+贪婪匹配≈反向匹配？？？ 匹配line字段时规则也是从后往前匹配
 
 
 
-
-">
+非贪婪匹配≈">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -481,7 +483,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    25
+                    182
                 </div>
                 
 
@@ -511,12 +513,30 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="正则表达示"><a href="#正则表达示" class="headerlink" title="正则表达示"></a>正则表达示</h2><blockquote>
-<p>贪婪匹配≈反向匹配？？？？ 匹配line字段时从后往前匹配</p>
+                <h2 id="正则表达示"><a href="#正则表达示" class="headerlink" title="正则表达示"></a>正则表达示</h2><p><code>贪婪匹配与非贪婪匹配个人理解：</code></p>
+<p><strong>贪婪匹配从左到右匹配，从最后一个满足条件的字符开始匹配</strong></p>
+<p><strong>非贪婪匹配从左到右匹配，从第一个满足条件的字符开始匹配</strong></p>
+<blockquote>
+<p><del>贪婪匹配≈反向匹配</del>？？？ 匹配line字段时<strong>规则</strong>也是从后往前匹配</p>
 </blockquote>
-<ul>
-<li><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619120630421.png" alt="image-20220619120630421"></li>
-</ul>
+<p><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619120630421.png"></p>
+<blockquote>
+<p>非贪婪匹配≈正向匹配     从左边开始匹配，正向匹配</p>
+</blockquote>
+<p><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619124521645.png"></p>
+<p><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619125144681.png"></p>
+<ol>
+<li>\s 匹配空格，\S匹配非空格  <strong>只代表一个字符</strong>，通常用\S+</li>
+<li>\w 匹配[a-zA-Z0-9_] \W与之相反，异：小w不能匹配 <strong>空格</strong> 等字符</li>
+<li>\d 匹配数字</li>
+<li>[^] 取反的意思</li>
+<li>匹配汉字<ol>
+<li><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619135538275.png"></li>
+</ol>
+</li>
+</ol>
+<h2 id="python新建虚拟环境"><a href="#python新建虚拟环境" class="headerlink" title="python新建虚拟环境"></a>python新建虚拟环境</h2><p><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619210341177.png"></p>
+<p><img src="/../images/%E6%85%95%E8%AF%BE%E7%BD%91%E5%AE%9E%E6%88%98%E8%AF%BE-%E7%95%85%E9%94%803%E5%B9%B4%E7%9A%84Python%E5%88%86%E5%B8%83%E5%BC%8F%E7%88%AC%E8%99%AB%E8%AF%BE%E7%A8%8B-%E5%8E%9F%E7%89%88%E6%8F%90%E5%8F%96.assets/image-20220619210631310.png"></p>
 
                 
             </div>
@@ -1025,7 +1045,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">25</span>
+                        class="white-color">182</span>
             
             
             
