@@ -225,7 +225,8 @@ cite {
 }
 
 mark {
-    background-color: #ff0000!important;
+    background:none!important;
+	color:#ff0000!important;
     padding: .2em;
 }
 
