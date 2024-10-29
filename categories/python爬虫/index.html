@@ -490,7 +490,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">30k</span>
+                        class="white-color">30.1k</span>
             
             
             
@@ -607,44 +607,150 @@
 
 
 
-    <!-- 搜索遮罩框 -->
+    <!-- 搜索模态框容器 -->
 <div id="searchModal" class="modal">
+    <!-- 搜索内容区域 -->
     <div class="modal-content">
+        <!-- 搜索头部：包含标题和搜索输入框 -->
         <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+            <!-- 搜索图标和标题 -->
+            <span class="title">
+                <i class="fas fa-search"></i>&nbsp;&nbsp;搜索
+            </span>
+            <!-- 搜索输入框 -->
+            <input type="search" 
+                   id="searchInput" 
+                   name="s" 
+                   placeholder="请输入搜索的关键字"
                    class="search-input">
         </div>
+        <!-- 搜索加载指示器 -->
+        <div id="searchLoadingIndicator" class="search-loading" style="display: none;">
+            <span class="spinner"></span> 搜索中...
+        </div>
+        <!-- 搜索结果显示区域 -->
         <div id="searchResult"></div>
     </div>
 </div>
 
 <script type="text/javascript">
 $(function () {
+    /**
+     * 防抖函数
+     * @param {Function} func - 要执行的函数
+     * @param {number} wait - 等待时间（毫秒）
+     * @returns {Function} - 防抖处理后的函数
+     */
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * 搜索功能主函数
+     * @param {string} path - 搜索数据文件路径
+     * @param {string} search_id - 搜索输入框的ID
+     * @param {string} content_id - 搜索结果容器的ID
+     */
     var searchFunc = function (path, search_id, content_id) {
         'use strict';
+        
         $.ajax({
             url: path,
             dataType: "xml",
             success: function (xmlResponse) {
-                // get the contents from search data
+                // 解析XML数据，提取所有文章条目
                 var datas = $("entry", xmlResponse).map(function () {
                     return {
-                        title: $("title", this).text(),
-                        content: $("content", this).text(),
-                        url: $("url", this).text()
+                        title: $("title", this).text(),    // 文章标题
+                        content: $("content", this).text(), // 文章内容
+                        url: $("url", this).text()         // 文章URL
                     };
                 }).get();
+                
                 var $input = document.getElementById(search_id);
                 var $resultContent = document.getElementById(content_id);
-                $input.addEventListener('input', function () {
-                    var str = '<ul class=\"search-result-list\">';
-                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-                    $resultContent.innerHTML = "";
-                    if (this.value.trim().length <= 0) {
-                        return;
+                var $loadingIndicator = document.getElementById('searchLoadingIndicator');
+                var focusInterval;
+                
+                /**
+                 * 优化的焦点和选中处理函数
+                 */
+                function handleFocusAndSelection() {
+                    if (document.activeElement !== $input) {
+                        $input.focus();
+                        if ($input.value) {
+                            $input.select();
+                        }
                     }
-                    // perform local searching
+                }
+                
+                /**
+                 * 开始保持焦点
+                 */
+                function startKeepingFocus() {
+                    handleFocusAndSelection();
+                    focusInterval = setInterval(handleFocusAndSelection, 100);
+                }
+
+                /**
+                 * 停止保持焦点
+                 */
+                function stopKeepingFocus() {
+                    clearInterval(focusInterval);
+                }
+
+                // 设置 Intersection Observer
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            startKeepingFocus();
+                        } else {
+                            stopKeepingFocus();
+                        }
+                    });
+                }, { threshold: 0.1 }); // 当10%的元素可见时触发
+
+                // 开始观察搜索输入框
+                observer.observe($input);
+                
+                // 阻止其他元素获取焦点
+                document.addEventListener('focusin', function(e) {
+                    if (e.target !== $input && $input.offsetParent !== null) {
+                        e.preventDefault();
+                        $input.focus();
+                    }
+                }, true);
+
+                /**
+                 * 显示加载指示器
+                 */
+                function showLoadingIndicator() {
+                    $loadingIndicator.style.display = 'block';
+                }
+
+                /**
+                 * 隐藏加载指示器
+                 */
+                function hideLoadingIndicator() {
+                    $loadingIndicator.style.display = 'none';
+                }
+
+                /**
+                 * 执行搜索的函数
+                 * @param {string[]} keywords - 搜索关键词数组
+                 */
+                function performSearch(keywords) {
+                    var str = '<ul class=\"search-result-list\">';
+                    var hasResult = false;
+                    
                     datas.forEach(function (data) {
                         var isMatch = true;
                         var data_title = data.title.trim().toLowerCase();
@@ -654,11 +760,12 @@ $(function () {
                         var index_title = -1;
                         var index_content = -1;
                         var first_occur = -1;
-                        // only match artiles with not empty titles and contents
+                        
                         if (data_title !== '' && data_content !== '') {
                             keywords.forEach(function (keyword, i) {
                                 index_title = data_title.indexOf(keyword);
                                 index_content = data_content.indexOf(keyword);
+                                
                                 if (index_title < 0 && index_content < 0) {
                                     isMatch = false;
                                 } else {
@@ -670,46 +777,124 @@ $(function () {
                                     }
                                 }
                             });
+                        } else {
+                            isMatch = false;
                         }
-                        // show search results
+                        
+                        // 如果匹配，添加到结果中
                         if (isMatch) {
+                            hasResult = true;
                             str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
                             var content = data.content.trim().replace(/<[^>]+>/g, "");
                             if (first_occur >= 0) {
-                                // cut out 100 characters
-                                var start = first_occur - 20;
-                                var end = first_occur + 80;
-                                if (start < 0) {
-                                    start = 0;
-                                }
-                                if (start === 0) {
-                                    end = 100;
-                                }
-                                if (end > content.length) {
-                                    end = content.length;
-                                }
-                                var match_content = content.substr(start, end);
-                                // highlight all keywords
+                                var start = Math.max(0, first_occur - 20);
+                                var end = Math.min(content.length, first_occur + 80);
+                                
+                                var match_content = content.substring(start, end);
                                 keywords.forEach(function (keyword) {
                                     var regS = new RegExp(keyword, "gi");
-                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                    match_content = match_content.replace(regS, 
+                                        "<em class=\"search-keyword\">" + keyword + "</em>");
                                 });
-
-                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                                
+                                str += "<p class=\"search-result\">" + match_content + "...</p>";
                             }
                             str += "</li>";
                         }
                     });
+                    
                     str += "</ul>";
-                    $resultContent.innerHTML = str;
-                });
+                    
+                    // 使用 requestAnimationFrame 来优化渲染
+                    requestAnimationFrame(() => {
+                        if (!hasResult) {
+                            $resultContent.innerHTML = "<ul><li>没有找到匹配的结果</li></ul>";
+                        } else {
+                            $resultContent.innerHTML = str;
+                        }
+                        hideLoadingIndicator();
+                    });
+                }
+
+                // 防抖处理的搜索函数
+                const debouncedSearch = debounce(function () {
+                    showLoadingIndicator();
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    if (this.value.trim().length <= 0) {
+                        $resultContent.innerHTML = "";
+                        hideLoadingIndicator();
+                        return;
+                    }
+                    
+                    // 执行搜索
+                    performSearch(keywords);
+                }, 300);
+                
+                // 监听搜索输入
+                $input.addEventListener('input', debouncedSearch);
+
+                // 清理函数
+                function cleanup() {
+                    $input.removeEventListener('input', debouncedSearch);
+                    observer.unobserve($input);
+                    stopKeepingFocus();
+                }
+                
+                // 在模态框关闭时清理
+                $('#searchModal').on('hidden.bs.modal', cleanup);
+            },
+            error: function(xhr, status, error) {
+                console.error("搜索数据加载失败:", error);
+                // 这里可以添加错误处理逻辑，比如显示错误消息给用户
             }
         });
     };
-
+    
+    // 初始化搜索功能
     searchFunc('/search.xml', 'searchInput', 'searchResult');
 });
 </script>
+
+<style>
+/* 添加一些基本的样式 */
+#searchInput {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    transition: none;
+}
+#searchInput:focus {
+    outline: none;
+    transition: none;
+}
+.search-result-list {
+    list-style-type: none;
+    padding: 0;
+}
+.search-result-title {
+    text-decoration: none;
+}
+.search-keyword {
+    font-weight: bold;
+    color: red; /* 高亮关键词的颜色 */
+}
+.search-loading {
+    text-align: center;
+    padding: 10px;
+}
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0,0,0,.3);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s ease-in-out infinite;
+}
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
 
     <!-- 回到顶部按钮 -->
 <div id="backTop" class="top-scroll">
