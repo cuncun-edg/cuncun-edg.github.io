@@ -1194,7 +1194,9 @@ article .article-tags .chip {
     max-width: 100%;
     height: auto;
     cursor: pointer;
+    display: block; /* 避免 inline 图片产生上下间距 */
 }
+
 
 #articleContent video {
     display: block;

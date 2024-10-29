@@ -89,16 +89,16 @@ $(function () {
             } else {
                 captionText = alt;
             }
-            // 字幕不空，添加之
-            if (captionText !== "") {
-                let captionDiv = document.createElement('div');
-                captionDiv.className = 'caption';
-                let captionEle = document.createElement('b');
-                captionEle.className = 'center-caption';
-                captionEle.innerText = captionText;
-                captionDiv.appendChild(captionEle);
-                this.insertAdjacentElement('afterend', captionDiv)
-            }
+            // 字幕不空，添加之,我修改去掉字幕
+            // if (captionText !== "") {
+            //     let captionDiv = document.createElement('div');
+            //     captionDiv.className = 'caption';
+            //     let captionEle = document.createElement('b');
+            //     captionEle.className = 'center-caption';
+            //     captionEle.innerText = captionText;
+            //     captionDiv.appendChild(captionEle);
+            //     this.insertAdjacentElement('afterend', captionDiv)
+            // }
         });
         $('#articleContent, #myGallery').lightGallery({
             selector: '.img-item',
@@ -120,7 +120,9 @@ $(function () {
 
     /*回到顶部*/
     $('#backTop').click(function () {
-        $('body,html').animate({scrollTop: 0}, 400);
+        $('body,html').animate({
+            scrollTop: 0
+        }, 400);
         return false;
     });
 
@@ -146,25 +148,25 @@ $(function () {
         }
     }
 
-    	
-	$(".nav-menu>li").hover(function(){
-		$(this).children('ul').stop(true,true).show();
-		 $(this).addClass('nav-show').siblings('li').removeClass('nav-show');
-		
-	},function(){
-		$(this).children('ul').stop(true,true).hide();
-		$('.nav-item.nav-show').removeClass('nav-show');
-	})
-	
-    $('.m-nav-item>a').on('click',function(){
-            if ($(this).next('ul').css('display') == "none") {
-                $('.m-nav-item').children('ul').slideUp(300);
-                $(this).next('ul').slideDown(100);
-                $(this).parent('li').addClass('m-nav-show').siblings('li').removeClass('m-nav-show');
-            }else{
-                $(this).next('ul').slideUp(100);
-                $('.m-nav-item.m-nav-show').removeClass('m-nav-show');
-            }
+
+    $(".nav-menu>li").hover(function () {
+        $(this).children('ul').stop(true, true).show();
+        $(this).addClass('nav-show').siblings('li').removeClass('nav-show');
+
+    }, function () {
+        $(this).children('ul').stop(true, true).hide();
+        $('.nav-item.nav-show').removeClass('nav-show');
+    })
+
+    $('.m-nav-item>a').on('click', function () {
+        if ($(this).next('ul').css('display') == "none") {
+            $('.m-nav-item').children('ul').slideUp(300);
+            $(this).next('ul').slideDown(100);
+            $(this).parent('li').addClass('m-nav-show').siblings('li').removeClass('m-nav-show');
+        } else {
+            $(this).next('ul').slideUp(100);
+            $('.m-nav-item.m-nav-show').removeClass('m-nav-show');
+        }
     });
 
     // 初始化加载 tooltipped.
